@@ -1,0 +1,48 @@
+<div class="header navbar">
+  <div class="header-container">
+    <ul class="nav-left">
+      <li>
+        <a class="side-nav-toggle" (click)="toggleSideNavCollapse()">
+          <i class="ti-view-grid"></i>
+        </a>
+      </li>
+    </ul>
+    <ul class="nav-right">
+      <li class="user-profile dropdown">
+        <a href="" class="dropdown-toggle" data-toggle="dropdown">
+          <img class="profile-img img-fluid" src="assets/images/profile/avatar-generic.jpg">
+          <div class="user-info">
+            <span class="name pdd-right-5">{{user}}</span>
+            <i class="ti-angle-down font-size-10"></i>
+          </div>
+        </a>
+        <ul class="dropdown-menu no-pdd-top no-pdd-btm">
+          <!--<li>
+            <a href="">
+              <i class="ti-settings pdd-right-10"></i>
+              <span>Ajustes</span>
+            </a>
+          </li>
+           <li>
+            <a [routerLink]="['usuarios']">
+              <i class="ti-user pdd-right-10"></i>
+              <span>Usuarios</span>
+            </a>
+          </li> -->
+          <li role="separator" class="divider"></li>
+          <li>
+            <a (click)="signOut()">
+              <i class="ti-power-off pdd-right-10"></i>
+              <span>Cerrar sesión</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- <li>
+        <a class="side-panel-toggle" href="javascript:void(0);" (click)="toggleSidePanelOpen()">
+          <i class="ti-align-right"></i>
+        </a>
+      </li> -->
+    </ul>
+  </div>
+</div>

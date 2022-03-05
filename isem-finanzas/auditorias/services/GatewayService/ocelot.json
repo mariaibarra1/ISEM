@@ -1,0 +1,79 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8101
+        }
+      ],
+      "UpstreamPathTemplate": "/catalogos/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "ReRouteIsCaseSensitive": true
+    },
+    {
+      "DownstreamPathTemplate": "/api/auditorias/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8102
+        }
+      ],
+      "UpstreamPathTemplate": "/auditorias/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "ReRouteIsCaseSensitive": true
+    },
+    {
+      "DownstreamPathTemplate": "/api/oficios/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8102
+        }
+      ],
+      "UpstreamPathTemplate": "/oficios/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "ReRouteIsCaseSensitive": true
+    },
+    {
+      "DownstreamPathTemplate": "/api/requerimientos/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8102
+        }
+      ],
+      "UpstreamPathTemplate": "/requerimientos/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "ReRouteIsCaseSensitive": true
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://10.2.15.40:8100"
+  }
+}

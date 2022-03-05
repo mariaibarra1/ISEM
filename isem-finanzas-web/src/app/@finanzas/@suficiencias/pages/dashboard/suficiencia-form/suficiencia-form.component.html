@@ -1,0 +1,826 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-heading border bottom">
+                    <h4 class="card-title font-weight-bold"><i class="ti-stats-up mrg-right-15"></i>Suficiencias
+                        Presupuestales<i class="ti-angle-right font-size-14 mrg-left-5 mrg-right-5"></i>{{tittle}}</h4>
+                </div>
+                <div class="portlet">
+                    <ul class="portlet-item">
+                        <li>
+                            <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark"
+                                ngbTooltip="Regresar" (click)="location.back()">
+                                <i class="ti-back-left"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-block">
+                    <div class="row">
+                        <div class="col-md-11 ml-auto mr-auto">
+                            <form class="ng-pristine ng-valid" role="form" #SuficienciaForm='ngForm'>
+                                <h4 class="card-title">Datos generales</h4>
+                                <p>Los campos marcados con <code>*</code> son obligatorios.</p>
+                                <div class="row mrg-top-40">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Fecha de recepción: <code>*</code></label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i
+                                                                class="ti-calendar"></i></span>
+                                                        <input id="fecha_recepcion" name="fecha_recepcion"
+                                                            class="form-control" placeholder=""
+                                                            [(ngModel)]="suficiencia.fecha_recepcionfront"
+                                                            #fecha_recepcion="ngModel"
+                                                            [class.error]="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)"
+                                                            ngbDatepicker #fechaRecepcion="ngbDatepicker"
+                                                            (click)="fechaRecepcion.toggle()" required [disabled]="true"
+                                                            autocomplete="off">
+                                                    </div>
+                                                    <div
+                                                        *ngIf="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                                                        <label *ngIf="fecha_recepcion.errors.required"
+                                                            class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Remitente: <code>*</code></label>
+                                                    <ng-select id="remitente" name="remitente"
+                                                        placeholder="Selecciona..." notFoundText="Sin resultados"
+                                                        loadingText="Cargando..." clearAllText="Limpiar"
+                                                        [(ngModel)]="suficiencia.id_area"
+                                                        #remitenteSuficiencias="ngModel"
+                                                        [class.error]="remitenteSuficiencias.invalid && (remitenteSuficiencias.dirty || remitenteSuficiencias.touched)"
+                                                        required [disabled]="tittle == 'Visualizar'">
+                                                        <ng-option *ngFor="let remi of listRemitente"
+                                                            [value]="remi.id_area">{{remi.nombre}}
+                                                        </ng-option>
+                                                    </ng-select>
+                                                    <div
+                                                        *ngIf="remitenteSuficiencias.invalid && (remitenteSuficiencias.dirty || remitenteSuficiencias.touched)">
+                                                        <label *ngIf="remitenteSuficiencias.errors.required"
+                                                            class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Folio: <code>*</code> </label>
+                                                    <input id="oficio" name="oficio" type="text" class="form-control"
+                                                        [(ngModel)]="suficiencia.folio" #numDocumento="ngModel"
+                                                        [class.error]="numDocumento.invalid && (numDocumento.dirty || numDocumento.touched)"
+                                                        required
+                                                        [disabled]="tittle == 'Visualizar'|| suficiencia.id_estatus === 11"
+                                                        maxlength="15">
+                                                    <div
+                                                        *ngIf="numDocumento.invalid && (numDocumento.dirty || numDocumento.touched)">
+                                                        <label *ngIf="numDocumento.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Monto solicitado:<code>*</code></label>
+                                                            <input id="monto" name="monto" class="form-control"
+                                                                [(ngModel)]="suficiencia.monto_solicitado"
+                                                                #monto="ngModel" required
+                                                                [disabled]="tittle == 'Visualizar'|| suficiencia.id_estatus === 11"
+                                                                maxlength="20" currencyMask
+                                                                [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }">
+                                                            <div *ngIf=" monto.invalid && (monto.dirty ||
+                                                                monto.touched)">
+                                                                <label *ngIf="monto.errors.required" class="error">Campo
+                                                                    requerido</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Asunto: <code>*</code></label>
+                                                    <textarea class="form-control" rows="2" id="asunto" name="asunto"
+                                                        type="text" class="form-control"
+                                                        [(ngModel)]="suficiencia.asunto" #asunto="ngModel"
+                                                        [class.error]="asunto.invalid && (asunto.dirty || asunto.touched)"
+                                                        maxlength="250" required
+                                                        [disabled]="tittle == 'Visualizar'|| suficiencia.id_estatus === 11"></textarea>
+                                                    <div *ngIf="asunto.invalid && (asunto.dirty || asunto.touched)">
+                                                        <label *ngIf="asunto.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="row" *ngIf=" status != 2 && status  != 4  && status  != 19 ">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>SP: <code>*</code></label>
+                                                    <input id="sp" name="sp" class="form-control"
+                                                        [(ngModel)]="suficiencia.sp" #sp="ngModel" type="text" required
+                                                        [disabled]="status  != 5 || suficiencia.id_estatus === 11 "
+                                                        maxlength="15" (change)="AgregarFecha()">
+                                                    <div *ngIf=" sp.invalid && (sp.dirty ||sp.touched)">
+                                                        <label *ngIf="sp.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Fecha turnado: </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">
+                                                            <i class="ti-calendar"></i>
+                                                        </span>
+                                                        <input id="fecha_turnado" name="fecha_turnado"
+                                                            class="form-control" placeholder="yyyy-mm-dd"
+                                                            [(ngModel)]="suficiencia.fecha_turnadoFront"
+                                                            #fecha_turnado="ngModel"
+                                                            [class.error]="fecha_turnado.invalid && (fecha_turnado.dirty || fecha_turnado.touched)"
+                                                            ngbDatepicker #fechaturnado="ngbDatepicker"
+                                                            (click)="fechaturnado.toggle()" required [disabled]="true">
+                                                    </div>
+                                                    <div
+                                                        *ngIf="fecha_turnado.invalid && (fecha_turnado.dirty || fecha_turnado.touched)">
+                                                        <label *ngIf="fecha_turnado.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Observaciones: <code>*</code></label>
+                                                    <textarea class="form-control" rows="2" id="observaciones"
+                                                        name="observaciones" type="text" class="form-control"
+                                                        [(ngModel)]="suficiencia.observacion" #Observaciones="ngModel"
+                                                        [class.error]="Observaciones.invalid && (Observaciones.dirty || Observaciones.touched)"
+                                                        maxlength="250" required
+                                                        [disabled]="tittle == 'Visualizar' || suficiencia.id_estatus === 11"></textarea>
+                                                    <div
+                                                        *ngIf="Observaciones.invalid && (Observaciones.dirty || Observaciones.touched)">
+                                                        <label *ngIf="Observaciones.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf=" status >= 8 && status != 19 && status != 20 && status != 22">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Fecha de liberación: </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i
+                                                                class="ti-calendar"></i></span>
+                                                        <input type="text" id="fecha_liberacion" name="fecha_liberacion"
+                                                            class="form-control"
+                                                            [(ngModel)]="suficiencia.fecha_liberacionfront"
+                                                            #fecha_liberacion="ngModel"
+                                                            [class.error]="fecha_liberacion.invalid && (fecha_liberacion.dirty || fecha_liberacion.touched)"
+                                                            ngbDatepicker #fechaliberacion="ngbDatepicker"
+                                                            (click)="fechaliberacion.toggle()" required
+                                                            [disabled]="true">
+                                                    </div>
+                                                    <div *ngIf="fecha_liberacion.invalid && (fecha_liberacion.dirty || fecha_liberacion.touched)">
+                                                        <label *ngIf="fecha_liberacion.errors.required" class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Fecha límite: </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">
+                                                            <i class="ti-calendar"></i>
+                                                        </span>
+                                                        <input id="fecha_limite" name="fecha_limite"
+                                                            class="form-control" placeholder="yyyy-mm-dd"
+                                                            [(ngModel)]="suficiencia.fecha_Limitefront"
+                                                            #fecha_limite="ngModel"
+                                                            [class.error]="fecha_limite.invalid && (fecha_limite.dirty || fecha_limite.touched)"
+                                                            ngbDatepicker #fechalimite="ngbDatepicker"
+                                                            (click)="fechalimite.toggle()" required [disabled]="true">
+                                                    </div>
+                                                    <div *ngIf="fecha_limite.invalid && (fecha_limite.dirty || fecha_limite.touched)">
+                                                        <label *ngIf="fecha_limite.errors.required" class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf=" !cheque && status >= 9 && status != 19 && status != 20 && status != 22">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Monto adjudicado: <code>*</code></label>
+                                                    <input id="montoA" name="montoA" class="form-control"
+                                                        [(ngModel)]="suficiencia.monto_adjudicado" #montoA="ngModel"
+                                                        required [disabled]="true " maxlength="20" currencyMask
+                                                        [options]="{ prefix: '$ ', thousands: '.', decimal: ',' }">
+                                                    <div *ngIf=" montoA.invalid && (monto.dirty || montoA.touched)">
+                                                        <label *ngIf="montoA.errors.required" class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Número de contrato:<code>*</code></label>
+                                                    <input id="numC" name="numC" class="form-control"
+                                                        [(ngModel)]="suficiencia.num_contrato" #numC="ngModel"
+                                                        type="text" required
+                                                        [disabled]="status  != 9 || suficiencia.id_estatus === 11 "
+                                                        maxlength="20">
+                                                    <div *ngIf="montomodificado">
+                                                        <label class="error">No hay disponibilidad de presupuesto</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf=" status >= 4">
+                                            <div class="col-md-6" *ngIf=" status >= 4">
+                                                <div class="form-group">
+                                                    <label>Tipo de Suficiencia: <code>*</code></label>
+                                                    <ng-select id="tipo" name="tipo" placeholder="Selecciona..."
+                                                        notFoundText="Sin resultados" loadingText="Cargando..."
+                                                        clearAllText="Limpiar"
+                                                        [(ngModel)]="suficiencia.id_tipo_suficiencia"
+                                                        #suficienciaTipo="ngModel"
+                                                        [class.error]="suficienciaTipo.invalid && (suficienciaTipo.dirty || suficienciaTipo.touched)"
+                                                        required [disabled]="status > 4">
+                                                        <ng-option *ngFor="let tipo of listCaTipoSuficiencia"
+                                                            [value]="tipo.id_tipo_suficiencia">{{tipo.nombre}}
+                                                        </ng-option>
+                                                    </ng-select>
+                                                    <div
+                                                        *ngIf="suficienciaTipo.invalid && (suficienciaTipo.dirty || suficienciaTipo.touched)">
+                                                        <label *ngIf="suficienciaTipo.errors.required"
+                                                            class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-6" *ngIf=" status == 19">
+                                                <div class="form-group">
+                                                    <label>Asignar a: <code>*</code></label>
+                                                    <ng-select id="asignado" name="asignado" placeholder="Seleccionar..."
+                                                        notFoundText="Sin resultados" loadingText="Cargando..."
+                                                        clearAllText="Limpiar"
+                                                        [(ngModel)]="suficiencia.id_usuario_estatus"
+                                                        #usuarioasignado="ngModel"
+                                                        [class.error]="usuarioasignado.invalid && (usuarioasignado.dirty || usuarioasignado.touched)"
+                                                        required>
+                                                        <ng-option *ngFor="let user of listUsuariosPresupuestos"
+                                                            [value]="user.id_usuario">{{user.nombre}}
+                                                            {{user.apellido_paterno}} {{ user.apellido_materno}}
+                                                        </ng-option>
+                                                    </ng-select>
+                                                    <div
+                                                        *ngIf="usuarioasignado.invalid && (usuarioasignado.dirty || usuarioasignado.touched)">
+                                                        <label *ngIf="usuarioasignado.errors.required"
+                                                            class="error">Campo requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6" *ngIf="cheque && status >= 9 && status != 19 && status != 20 ">
+                                                <div class="form-group">
+                                                    <label>Numero de cheque: <code>*</code> </label>
+                                                    <input id="cheque" name="cheque" type="number" class="form-control"
+                                                        [(ngModel)]="suficiencia.num_cheque" #numcheque="ngModel"
+                                                        [class.error]="numcheque.invalid && (numcheque.dirty || numcheque.touched)"
+                                                        required [disabled]="suficiencia.id_estatus != 9"
+                                                        maxlength="10">
+                                                    <div
+                                                        *ngIf="numcheque.invalid && (numcheque.dirty || numcheque.touched)">
+                                                        <label *ngIf="numcheque.errors.required" class="error">Campo
+                                                            requerido</label>000
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="row" *ngIf=" cheque && status >= 9 && status != 19 && status != 20 ">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Monto del cheque :<code>*</code></label>
+                                                    <input id="montocheque" name="montocheque" class="form-control"
+                                                        [(ngModel)]="suficiencia.monto_cheque" #montocheque="ngModel"
+                                                        required [disabled]="suficiencia.id_estatus != 9" maxlength="20"
+                                                        currencyMask
+                                                        [options]="{ prefix: '$ ', thousands: '.', decimal: ',' }">
+                                                    <div
+                                                        *ngIf=" montocheque.invalid && (montocheque.dirty ||  montocheque.touched)">
+                                                        <label *ngIf="montocheque.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Banco de expedicion : <code>*</code> </label>
+                                                    <input id="banco" name="banco" type="text" class="form-control"
+                                                        [(ngModel)]="suficiencia.banco_expedicion" #banco="ngModel"
+                                                        [class.error]="banco.invalid && (banco.dirty || banco.touched)"
+                                                        required [disabled]="suficiencia.id_estatus != 9"
+                                                        maxlength="15">
+                                                    <div *ngIf="banco.invalid && (banco.dirty || banco.touched)">
+                                                        <label *ngIf="banco.errors.required" class="error">Campo
+                                                            requerido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+
+
+                                <div *ngIf=" status != 2 && status != 4 && status != 19 ">
+                                    <h4 class="card-title mrg-top-30">Recursos</h4>
+                                    <p *ngIf=" status == 5 && suficiencia.id_estatus !== 11">Presione el botón
+                                        <strong>+</strong> para agregar un nuevo
+                                        <strong>recurso</strong>.
+                                        <code>*</code></p>
+
+                                </div>
+
+                                <div class="row" *ngIf=" status != 2 && status != 4 && status != 19">
+                                    <div class="col-md-12 text-right"
+                                        *ngIf=" status == 5 && suficiencia.id_estatus !== 11">
+                                        <a class="btn btn-default btn-sm" (click)="agregarff(FF)">
+                                            <i class="ti-plus font-weight-bolder"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="width-30">Fuente de financiamiento</th>
+                                                        <th class="width-20">Partida</th>
+                                                        <th class="width-20">Monto</th>
+                                                        <th class="width-20">Descripción</th>
+                                                        <th class="width-20" *ngIf="status  == 9 ">Monto adjudicado
+                                                        </th>
+                                                        <th class="text-center width-10">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let ob of listFF; index as i">
+                                                        <td>
+                                                            {{ob.fuente_financiamiento}}
+                                                        </td>
+                                                        <td>
+                                                            {{ob.concepto_partida}}
+                                                        </td>
+                                                        <td>
+                                                            {{ob.monto | currency: 0 : "$" }}
+                                                        </td>
+                                                        <td>
+                                                            {{ob.descripcion}}
+                                                        </td>
+                                                        <td *ngIf="status  == 9 ">
+                                                            <input id="montoAFP" name="montoAFP" class="form-control"
+                                                                [(ngModel)]="ob.monto_adjudicado" #montoAFP="ngModel"
+                                                                required maxlength="20" (blur)="validarMonto(ob)"
+                                                                       currencyMask
+                                                                [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }">
+                                                            <div
+                                                                *ngIf=" montoAFP.invalid && (montoAFP.dirty ||     montoAFP.touched)">
+                                                                <label *ngIf="montoAFP.errors.required" class="error">Campo requerido</label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="mrg-top-5 text-center" *ngIf=" status == 5">
+                                                                <a class="btn btn-danger btn-sm" ngbTooltip=" Eliminar"
+                                                                    (click)="eliminarFF(ob)">
+                                                                    <i class="ti-trash font-weight-bolder"
+                                                                        style="color:white"></i>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div *ngIf=" status != 2">
+                                    <h4 class="card-title mrg-top-30">Observaciones</h4>
+                                    <p *ngIf="suficiencia.id_estatus < 22 && suficiencia.id_estatus != 11 || suficiencia.id_estatus != 10">Presione el botón <strong>+</strong> para agregar una nueva <strong>observación</strong>.</p>
+                                </div>
+
+                                <div class="row" *ngIf=" status != 2">
+                                    <div class="col-md-12 text-right" *ngIf="suficiencia.id_estatus < 22 && suficiencia.id_estatus != 11|| suficiencia.id_estatus != 10 ">
+                                        <a class="btn btn-default btn-sm" (click)="agregarObservaciones(obs)">
+                                            <i class="ti-plus font-weight-bolder"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div
+                                            class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="width-60">Observación</th>
+                                                        <th class="width-20">Fecha</th>
+                                                        <th class="text-center width-20">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let ob of listObservaciones; index as i">
+                                                        <td>
+                                                            {{ob.observacion}}
+                                                        </td>
+                                                        <td>
+                                                            {{ob.fecha_creacion}}
+                                                        </td>
+                                                        <td>
+                                                            <div class="mrg-top-5 text-center">
+                                                                <a class="btn btn-danger btn-sm" ngbTooltip=" Eliminar"
+                                                                    (click)="eliminarObservacion(ob)"
+                                                                    [hidden]=" ob.id_observacion != null">
+                                                                    <i class="ti-trash font-weight-bolder"
+                                                                        style="color:white"></i>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4 class="card-title mrg-top-30">Archivos</h4>
+                                <p *ngIf=" suficiencia.id_estatus == 22 || tittle == 'Agregar' || suficiencia.id_estatus == 10 ">Presione el
+                                    botón <strong>+</strong> para
+                                    agregar un nuevo <strong>archivo</strong>.
+                                    <code>*</code>
+                                </p>
+                                <div class="row">
+                                    <div class="col-md-12 text-right"
+                                        *ngIf="suficiencia.id_estatus == 22 ||  tittle == 'Agregar'|| suficiencia.id_estatus == 10 ">
+                                        <button class="btn btn-default btn-sm" (click)="onClick()">
+                                            <i class="ti-plus font-weight-bolder"></i>
+                                        </button>
+                                        <input style="display: none;" id="adjunto" name="adjunto" type="file"
+                                            (change)="agregarAdjunto($event.target.files)">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="width-40">Nombre</th>
+
+                                                        <th class="text-center width-20">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let adjunto of listAdjuntos; index as i">
+                                                        <td>
+                                                            {{adjunto.nombre}}
+                                                        </td>
+
+                                                        <td class="text-center">
+                                                            <a class="btn btn-danger btn-sm" ngbTooltip="Eliminar"
+                                                                (click)="eliminarAdjunto(adjunto)"
+                                                                [hidden]=" adjunto.id_adjunto != null">
+                                                                <i class="ti-trash font-weight-bolder"
+                                                                    style="color:white"></i>
+                                                            </a>
+                                                            <app-verAdjuntos [nombre_adjunto]="adjunto.nombre"
+                                                                [hidden]=" adjunto.id_adjunto == null">
+                                                            </app-verAdjuntos>
+                                                        </td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-left">
+                                        <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                                            <button class="btn btn-primary" (click)="abrirModal(oficio)">
+                                                <i class="ti-files pdd-right-5"></i> Generar Oficio
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mrg-top-40">
+                                    <div class="col-md-12">
+                                        <div class="text-right mrg-top-5">
+                                            <button class="btn btn-default"
+                                                [routerLink]="['/finanzas/suficiencias/dashboard']">Cancelar
+                                            </button>
+                                            <button type="submit" class="btn btn-info" *ngIf="tittle == 'Agregar'"
+                                                [disabled]="SuficienciaForm.invalid"
+                                                (click)="guardarSuficiencia(SuficienciaForm)">
+                                                <i class="ti-save pdd-right-5"></i> Guardar
+                                            </button>
+                                            <button type="submit" class="btn btn-info "
+                                                *ngIf=" tittle == 'Visualizar' && suficiencia.id_estatus != 11  && suficiencia.id_estatus != 10  && suficiencia.id_estatus != 20 "
+                                                [disabled]="Valid(SuficienciaForm)" (click)="TurnarSuficiencia()">
+                                                <i class="ti-save pdd-right-5"></i> Turnar
+                                            </button>
+                                            <button type="submit" class="btn btn-info"  *ngIf=" tittle == 'Visualizar' && suficiencia.id_estatus == 10 "
+                                             [disabled]="Valid(SuficienciaForm)" (click)="TurnarSuficiencia()">
+                                              <i class="ti-save pdd-right-5"></i> Guardar
+                                            </button>
+
+                                             <button type="button" data-toggle="dropdown" class="btn btn-info dropdown-toggle"
+                                              aria-expanded="false" *ngIf=" suficiencia.id_estatus == 20 " style="margin-bottom: 10px;" [disabled]="Valid(SuficienciaForm)">
+                                               <span>Acciones </span><i class="ti-angle-down font-size-9"></i>
+                                                </button>
+                                                 <ul class="dropdown-menu" style="cursor: default;">
+                                                   <li >
+                                                        <a  (click)="TurnarSuficiencia( true )">   Turnar
+                                                           </a>
+                                                   </li>
+                                                    <li >
+                                                        <a (click)="TurnarSuficiencia( false )">
+                                                              Regresar a Proceso
+                                                             </a>
+                                                             </li> </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>
+
+
+<ng-template #obs let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Agregar Observaciones</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" style="padding: 30px;">
+        <form class="ng-pristine ng-valid" role="form" #ObservacionesForm='ngForm'>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label>Observaciones:<code>*</code></label>
+                        <textarea class="form-control" rows="2" id="observaciones" name="observaciones" type="text"
+                            class="form-control" [(ngModel)]="observacion.observacion" #obses="ngModel"
+                            [class.error]="Observaciones.invalid && (Observaciones.dirty || Observaciones.touched)"
+                            maxlength="250" required></textarea>
+                        <div *ngIf="Observaciones.invalid && (Observaciones.dirty || Observaciones.touched)">
+                            <label *ngIf="Observaciones.errors.required" class="error">Campo
+                                requerido</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" [disabled]="ObservacionesForm.invalid"
+            (click)="modal.close(obses)">Agregar</button>
+    </div>
+</ng-template>
+
+<ng-template #FF let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Agregar Recursos</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" style="padding: 30px;">
+        <form class="ng-pristine ng-valid" role="form" #FFForm='ngForm'>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Recurso</label>
+                        <ng-select id="recurso" name="recurso" [(ngModel)]="partidaFF.id_fuente_financiamiento"
+                            #recursoSuficiencia="ngModel"
+                            [class.error]="recursoSuficiencia.invalid && (recursoSuficiencia.dirty || recursoSuficiencia.touched)"
+                            (change)="fuenteChange($event)">
+                            <ng-option *ngFor="let rem of listRecursos" [value]="rem">
+                                {{rem.nombre}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Partida</label>
+                        <ng-select id="partida" name="partida" [(ngModel)]="partidaFF.id_partida" #partida="ngModel"
+                            [class.error]="partida.invalid && (partida.dirty || partida.touched)"
+                            (change)="partidaChenage($event)">
+                            <ng-option *ngFor="let rem of listRecursosXPartida" [value]="rem">
+                                {{rem.partida}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Concepto</label>
+                        <div>
+                            <input id="conceptoInput" name="conceptoInput" class="form-control" value={{conceptoPartida}} disabled>
+                            <!-- <label style="text-align: center;"> {{conceptoPartida}}</label> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Monto </label>
+                        <input id="montof" name="montof" class="form-control" placeholder="Monto"
+                            [(ngModel)]="partidaFF.monto" #montof="ngModel" required (blur)="ValidarMontopartida()"
+                            currencyMask [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }">
+                        <div *ngIf="montoEroor">
+                            <label class="error">El monto no debe superar el presupuesto de la partida </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Monto máximo </label>
+                        <div>
+                            <input id="montoMax" name="montoMax" class="form-control"  value={{montoMaximo}}  currencyMask [options]="{ prefix: '$ ', thousands: '.', decimal: ',' }" disabled>
+                            <!-- <label style="text-align: center;"> {{montoMaximo}}</label> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Descripción </label>
+                        <textarea class="form-control" rows="2" id="Descripcion" name="Descripcion" type="text"
+                            class="form-control" [(ngModel)]="partidaFF.descripcion" #descripcion="ngModel"
+                            placeholder="Descripción"
+                            [class.error]="descripcion.invalid && (descripcion.dirty || descripcion.touched)"
+                            maxlength="250"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" [disabled]="montoEroor || FFForm.invalid"
+            (click)="modal.close(FFForm)">Agregar</button>
+    </div>
+</ng-template>
+
+<ng-template #oficio let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Generar Oficio</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" style="padding: 30px;">
+        <form class="ng-pristine ng-valid" role="form" #OficioForm='ngForm'>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Tipo de Oficio:<code>*</code></label>
+                        <ng-select id="tipoOficio" name="tipoOficio" placeholder="Seleccionar..."
+                            notFoundText="Sin resultados" loadingText="Cargando..." clearAllText="Limpiar"
+                            [(ngModel)]="firmantes.id_tipo_oficio" #tipoOficio="ngModel"
+                            [class.error]="tipoOficio.invalid && (tipoOficio.dirty || tipoOficio.touched)" required>
+                            <ng-option *ngFor="let tipo of listTiposOficio" [value]="tipo.id_tipo_oficio">
+                                {{tipo.nombre}}
+                            </ng-option>
+                        </ng-select>
+                        <div *ngIf="tipoOficio.invalid && (tipoOficio.dirty || tipoOficio.touched)">
+                            <label *ngIf="tipoOficio.errors.required" class="error">Campo requerido</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nombre del solicitante:<code>*</code></label>
+                        <input id="nombre_solicitante" name="nombre_solicitante" type="text" class="form-control"
+                        [(ngModel)]="firmantes.nombre_solicitante" #nombreSolicitante="ngModel"
+                        [class.error]="nombreSolicitante.invalid && (nombreSolicitante.dirty || nombreSolicitante.touched)"
+                        required>                          
+                        <div *ngIf="nombreSolicitante.invalid && (nombreSolicitante.dirty || nombreSolicitante.touched)">
+                            <label *ngIf="nombreSolicitante.errors.required" class="error">Campo requerido</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Puesto del solicitante:<code>*</code></label>
+                        <input id="puesto_solicitante" name="puesto_solicitante" type="text" class="form-control"
+                        [(ngModel)]="firmantes.puesto_solicitante" #puestoSolicitante="ngModel"
+                        [class.error]="puestoSolicitante.invalid && (puestoSolicitante.dirty || puestoSolicitante.touched)"
+                        required>                          
+                        <div *ngIf="puestoSolicitante.invalid && (puestoSolicitante.dirty || puestoSolicitante.touched)">
+                            <label *ngIf="puestoSolicitante.errors.required" class="error">Campo requerido</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Elaboró:</label>
+                        <ng-select id="elaboro" name="elaboro" placeholder="Seleccionar..."
+                            notFoundText="Sin resultados" loadingText="Cargando..." clearAllText="Limpiar"
+                            [(ngModel)]="firmantes.id_elaboro" #elaboro="ngModel">
+                            <ng-option *ngFor="let user of listUsuarios" [value]="user.id_usuario">{{user.nombre}}
+                                {{user.apellido_paterno}} {{ user.apellido_materno}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Revisó:</label>
+                        <ng-select id="reviso" name="reviso" placeholder="Seleccionar..."
+                            notFoundText="Sin resultados" loadingText="Cargando..." clearAllText="Limpiar"
+                            [(ngModel)]="firmantes.id_reviso" #reviso="ngModel">
+                            <ng-option *ngFor="let user of listUsuarios" [value]="user.id_usuario">{{user.nombre}}
+                                {{user.apellido_paterno}} {{ user.apellido_materno}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Validó:</label>
+                        <ng-select id="valido" name="valido" placeholder="Seleccionar..."
+                        notFoundText="Sin resultados" loadingText="Cargando..." clearAllText="Limpiar"
+                        [(ngModel)]="firmantes.id_valido" #valido="ngModel">
+                        <ng-option *ngFor="let user of listUsuarios" [value]="user.id_usuario">{{user.nombre}}
+                            {{user.apellido_paterno}} {{ user.apellido_materno}}
+                        </ng-option>
+                    </ng-select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" [disabled]="OficioForm.invalid"
+        (click)="modal.close(firmantes)" > Generar </button>
+    </div>
+</ng-template>

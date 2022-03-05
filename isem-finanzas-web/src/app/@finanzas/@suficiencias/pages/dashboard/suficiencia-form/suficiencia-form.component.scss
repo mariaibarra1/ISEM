@@ -1,0 +1,31 @@
+ng-select.ng-invalid.ng-touched ::ng-deep .ng-select-container {
+  border-color: #dc3545;
+  background-color: #ffeff4;
+}
+
+.table-wrapper-scrollbar {
+  position: relative;
+  max-height: 400px;
+  overflow: auto;
+  margin-bottom: 1rem;
+}
+
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+.table-sticky-head {
+  overflow-y: auto;
+}
+
+.table-sticky-head table {
+  border-top: 0;
+  margin-bottom: 0 !important;
+}
+
+.table-sticky-head thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #ffffff;
+}

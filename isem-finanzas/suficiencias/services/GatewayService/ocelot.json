@@ -1,0 +1,43 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/suficiencias/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8301
+        }
+      ],
+      "UpstreamPathTemplate": "/suficiencias/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "ReRouteIsCaseSensitive": true
+    },
+    {
+      "DownstreamPathTemplate": "/api/firmante/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8301
+        }
+      ],
+      "UpstreamPathTemplate": "/firmante/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "ReRouteIsCaseSensitive": true
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://10.2.15.40:8300"
+  }
+}

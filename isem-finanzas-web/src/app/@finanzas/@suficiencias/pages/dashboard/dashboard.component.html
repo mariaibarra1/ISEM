@@ -1,0 +1,372 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-heading border-bottom">
+          <h4 class="card-title font-weight-bold"><i class="ti-stats-up mrg-right-15"></i>Suficiencias Presupuestales
+          </h4>
+        </div>
+        <div class="portlet">
+          <ul class="portlet-item">
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="limpiar búsqueda"
+                (click)="limpiarbusqueda()" *ngIf="busqueda">
+                <i class="ti-brush"></i>
+              </a>
+            </li>
+
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="búsqueda"
+                (click)="abrirbusqueda(content)">
+                <i class="ti-search"></i>
+              </a>
+            </li>
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Agregar"
+                [routerLink]="['agregar']">
+                <i class="ti-plus"></i>
+              </a>
+            </li>
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Actualizar"
+                (click)="actualizarSuficiencias()">
+                <i class="ti-reload"></i>
+              </a>
+            </li>
+
+
+          </ul>
+        </div>
+        <div class="card-block">
+          <div class="table-overflow">
+            <table class="table table-lg table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Recurso</th>
+                  <th>Remitente</th>
+
+                  <th>Asunto</th>
+                  <th>Partida</th>
+                  <th>Monto solicitado</th>
+                  <!-- <th>Fecha de recepción</th>
+
+                   <th>Turnado</th>
+                  <th>SP</th> -->
+                  <!-- <th>Observaciones</th> -->
+                  <th>fecha de liberación</th>
+                  <th>Estatus</th>
+
+                  <th>Días restantes</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- <tr *ngIf="rows.length ==0  || !respuesta" style="text-align: center;">
+                  No hay elementos
+                </tr> -->
+
+
+                <tr *ngFor="let row of rows; index as i">
+
+                  <td>
+                    <div class="mrg-top-15 text-center">
+                      <span class="info">{{row.folio}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.nombre_fuente}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.nombre_area}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.asunto}}</span>
+                    </div>
+                  </td>
+                  <!-- <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.fecha_recepcion}}</span>
+                    </div>
+                  </td>-->
+                  <td>
+                    <div class="mrg-top-15 text-center">
+                      <span class="info">{{row.nombre_partida}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.monto_solicitado | currency: 0 : "$"}}</span>
+                    </div>
+                  </td>
+                  <!-- <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.turnado}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.sp}}</span>
+                    </div> -->
+                  <!-- </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.observaciones}}</span>
+                    </div>
+                  </td> -->
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.fecha_liberacion}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15">
+                      <span class="info">{{row.nombre_estatus}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-15 text-center">
+                      <span class="info">{{row.fecha_limite}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="mrg-top-5 text-center">
+                      <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Visualizar"
+                        [routerLink]="['Visualizar', row.id_suficiencia]">
+                        <i class="ti-eye"></i>
+                      </a>
+                    </div>
+                    <div class="mrg-top-5 text-center"
+                      *ngIf="usuario.id_rol === 1 && row.id_estatus != 11 && row.num_contrato == null ">
+                      <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Cancelar"
+                        (click)="cancelar(cancel,row)">
+                        <i class="ti-close"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Busqueda de Suficiencia</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px;">
+    <form class="ng-pristine ng-valid" role="form" #SuficienciaForm='ngForm'>
+      <div class="row">
+        <div class="col-md-6">
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Fecha de recepción</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="ti-calendar"></i>
+              </span>
+              <input id="fecha_recepcion" name="fecha_recepcion" class="form-control" placeholder="yyyy-mm-dd"
+                [(ngModel)]="suficiencia.fecha_recepcion" #fecha_recepcion="ngModel"
+                [class.error]="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)"
+                ngbDatepicker #fechaRecepcion="ngbDatepicker" (click)="fechaRecepcion.toggle()">
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Remitente</label>
+            <ng-select id="remitente" name="remitente" [(ngModel)]="suficiencia.id_area"
+              #remitenteSuficiencias="ngModel"
+              [class.error]="remitenteSuficiencias.invalid && (remitenteSuficiencias.dirty || remitenteSuficiencias.touched)">
+              <ng-option *ngFor="let remi of listRemitente" [value]="remi.id_remitente">{{remi.nombre}}
+              </ng-option>
+            </ng-select>
+
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Fecha de liberación</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="ti-calendar"></i>
+              </span>
+              <input id="fecha_liberacion" name="fecha_liberacion" class="form-control" placeholder="yyyy-mm-dd"
+                [(ngModel)]="suficiencia.fecha_liberacion" #fecha_liberacion="ngModel"
+                [class.error]="fecha_liberacion.invalid && (fecha_liberacion.dirty || fecha_liberacion.touched)"
+                ngbDatepicker #fechaliberacion="ngbDatepicker" (click)="fechaliberacion.toggle()">
+            </div>
+
+          </div>
+        </div>
+
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Recurso</label>
+            <ng-select id="recurso" name="recurso" [(ngModel)]="suficiencia.id_fuente_financiamiento"
+              #recursoSuficiencia="ngModel"
+              [class.error]="recursoSuficiencia.invalid && (recursoSuficiencia.dirty || recursoSuficiencia.touched)">
+              <ng-option *ngFor="let rem of listRecursos" [value]="rem.id_fuente_financiamiento">{{rem.nombre}}
+              </ng-option>
+            </ng-select>
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>No. de documento</label>
+            <input id="oficio" name="oficio" type="number" class="form-control" placeholder="No. de documento"
+              [(ngModel)]="suficiencia.folio" #numDocumento="ngModel"
+              [class.error]="numDocumento.invalid && (numDocumento.dirty || numDocumento.touched)">
+
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Asunto</label>
+            <input id="asunto" name="asunto" type="text" class="form-control" placeholder="asunto"
+              [(ngModel)]="suficiencia.asunto" #asunto="ngModel"
+              [class.error]="asunto.invalid && (asunto.dirty || asunto.touched)" maxlength="250">
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Partida</label>
+            <input id="partida" name="partida" type="number" class="form-control" placeholder="partida"
+              [(ngModel)]="suficiencia.id_partida" #partida="ngModel"
+              [class.error]="partida.invalid && (partida.dirty || partida.touched)">
+
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Monto</label>
+            <input id="monto" name="monto" type="number" class="form-control" placeholder="monto"
+              [(ngModel)]="suficiencia.monto_suficiencia" #monto="ngModel"
+              [class.error]="monto.invalid && (monto.dirty || monto.touched)">
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Turnado</label>
+            <input id="turnado" name="turnado" type="number" class="form-control" placeholder="turnado"
+              [(ngModel)]="suficiencia" #turnado="ngModel"
+              [class.error]="turnado.invalid && (turnado.dirty || turnado.touched)">
+
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Fecha de Turnado</label>
+            <input id="fecha_turno" name="fecha_turno" type="number" class="form-control" placeholder="fecha de turnado"
+              [(ngModel)]="suficiencia.fecha_turno" #fecha_turno="ngModel"
+              [class.error]="fecha_turno.invalid && (fecha_turno.dirty || fecha_turno.touched)">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>SP</label>
+            <input id="sp" name="sp" type="number" class="form-control" placeholder="sp" [(ngModel)]="suficiencia.sp"
+              #sp="ngModel" [class.error]="sp.invalid && (sp.dirty || sp.touched)">
+
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Observaciones</label>
+            <input id="observaciones" name="observaciones" type="text" class="form-control" placeholder="Observaciones"
+              [(ngModel)]="suficiencia.observacion" #observaciones="ngModel"
+              [class.error]="observaciones.invalid && (observaciones.dirty || observaciones.touched)" maxlength="250">
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close(SuficienciaForm)">Buscar</button>
+
+
+
+  </div>
+</ng-template>
+
+<ng-template #cancel let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Cancelar Suficiencia</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px;">
+    <form class="ng-pristine ng-valid" role="form" #CancelForm='ngForm'>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Observacion:<code>*</code></label>
+            <textarea class="form-control" rows="2" id="observacion" name="observacion" type="text" class="form-control"
+              [(ngModel)]=" observacionCancelacion.observacion" #obses="ngModel"
+              [class.error]="obses.invalid && (obses.dirty || obses.touched)" maxlength="250" required></textarea>
+            <div *ngIf="obses.invalid && (obses.dirty || obses.touched)">
+              <label *ngIf="obses.errors.required" class="error">Campo
+                requerido</label>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-outline-dark" [disabled]="CancelForm.invalid"
+      (click)="modal.close(CancelForm)">Cancelar</button>
+
+
+
+  </div>
+</ng-template>

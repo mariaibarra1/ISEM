@@ -1,0 +1,57 @@
+<div class="authentication">
+  <div class="sign-in-2">
+    <div class="container-fluid no-pdd-horizon bg" style="background-image: url('assets/images/others/img-34.jpg')">
+      <div class="row">
+        <div class="col-md-10 mr-auto ml-auto">
+          <div class="row">
+            <div class="mr-auto ml-auto full-height height-100 d-flex align-items-center">
+              <div class="vertical-align full-height">
+                <div class="table-cell">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="pdd-horizon-30 pdd-vertical-30">
+                        <div class="mrg-btm-10">
+                          <h2 class="inline-block no-mrg-vertical pdd-top-15">Bienvenido</h2>
+                        </div>
+                        <p class="mrg-btm-15 font-size-13">Por favor ingrese su nombre de usuario y contraseña</p>
+                        <form class="ng-pristine ng-valid" role="form" #loginForm='ngForm'>
+                          <div class="form-group">
+                            <input id="username" name="username" type="email" class="form-control"
+                              placeholder="Nombre de usuario" [(ngModel)]="username" #usernameLogin="ngModel"
+                              [class.error]="usernameLogin.invalid && (usernameLogin.dirty || usernameLogin.touched)"
+                              required>
+                            <div *ngIf="usernameLogin.invalid && (usernameLogin.dirty || usernameLogin.touched)">
+                              <label *ngIf="usernameLogin.errors.required" class="error">Campo requerido</label>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <input id="password" name="password" type="password" class="form-control"
+                              placeholder="Contraseña" [(ngModel)]="password" #passwordLogin="ngModel"
+                              [class.error]="passwordLogin.invalid && (passwordLogin.dirty || passwordLogin.touched)"
+                              required (keyup.enter)="signIn()">
+                            <div *ngIf="passwordLogin.invalid && (passwordLogin.dirty || passwordLogin.touched)">
+                              <label *ngIf="passwordLogin.errors.required" class="error">Campo requerido</label>
+                            </div>
+
+                          </div>
+                          <div *ngIf="Acceso">
+                            <label class="error"> Usuario o Contraseña Incorrecto . Intente Nuevamente</label>
+                          </div>
+                          <div class="mrg-top-20 text-right">
+                            <button type="button" class="btn btn-default" [disabled]="loginForm.invalid"
+                              (click)="signIn()">Iniciar sesión
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

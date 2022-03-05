@@ -1,0 +1,411 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-heading border bottom">
+          <h4 class="card-title font-weight-bold">
+            <i class="ti-check-box mrg-right-15"></i>Auditorías<i
+              class="ti-angle-right font-size-14 mrg-left-5 mrg-right-5"></i>{{ tittle }}
+          </h4>
+        </div>
+        <div class="portlet">
+          <ul class="portlet-item">
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Regresar"
+                (click)="redireccionDashboardAuditoria()">
+                <i class="ti-back-left"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-block">
+          <div class="mrg-top-40">
+            <div class="row">
+              <div class="col-md-11 ml-auto mr-auto">
+                <form class="ng-pristine ng-valid" role="form" #auditoriaForm="ngForm">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Tipo de recepción: <code>*</code></label>
+                        <input id="nombre_recepcion" name="nombre_recepcion" type="text" class="form-control"
+                               [(ngModel)]="auditoria.tipo_recepcion" [disabled]="accion == 'editar'"
+                               [hidden]="accion != 'editar'" />
+                        <ng-select id="id_tipo_recepcion" name="id_tipo_recepcion" placeholder="Seleccionar..."
+                                   [(ngModel)]="auditoria.id_tipo_recepcion" #tipoRecepcion="ngModel"
+                                   [hidden]="accion == 'editar'" [class.error]="
+                            tipoRecepcion.invalid &&
+                            (tipoRecepcion.dirty || tipoRecepcion.touched)
+                          " required>
+                          <ng-option *ngFor="let rec of listTiposRecepcion" [value]="rec.id_tipo_recepcion">
+                            {{ rec.nombre }}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="
+                            tipoRecepcion.invalid &&
+                            (tipoRecepcion.dirty || tipoRecepcion.touched)
+                          ">
+                          <label *ngIf="tipoRecepcion.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>No. de Folio: <code>*</code></label>
+                        <input id="folio" name="folio" type="text" class="form-control" placeholder="No. de Folio"
+                               [(ngModel)]="auditoria.folio" #folio="ngModel" [disabled]="accion == 'editar'" [class.error]="
+                            folio.invalid && (folio.dirty || folio.touched)
+                          " required maxlength="100" />
+                        <div *ngIf="
+                            folio.invalid && (folio.dirty || folio.touched)
+                          ">
+                          <label *ngIf="folio.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>No. de auditoría: <code>*</code></label>
+                        <input id="numero_aud" name="numero_aud" type="text" class="form-control"
+                               placeholder="No. de auditoría" [(ngModel)]="auditoria.num_auditoria"
+                               #numeroAuditoria="ngModel" [disabled]="accion == 'editar'" [class.error]="
+                            numeroAuditoria.invalid &&
+                            (numeroAuditoria.dirty || numeroAuditoria.touched)
+                          " required maxlength="100" />
+                        <div *ngIf="
+                            numeroAuditoria.invalid &&
+                            (numeroAuditoria.dirty || numeroAuditoria.touched)
+                          ">
+                          <label *ngIf="numeroAuditoria.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Ejercicio fiscal: <code>*</code></label>
+                        <input id="ejercicio" name="ejercicio" type="number" class="form-control"
+                               placeholder="Ejercicio fiscal" [(ngModel)]="auditoria.ejercicio" #ejercicioAuditoria="ngModel"
+                               [disabled]="accion == 'editar'" [class.error]="
+                            ejercicioAuditoria.invalid &&
+                            (ejercicioAuditoria.dirty ||
+                              ejercicioAuditoria.touched)
+                          " required />
+                        <div *ngIf="
+                            ejercicioAuditoria.invalid &&
+                            (ejercicioAuditoria.dirty ||
+                              ejercicioAuditoria.touched)
+                          ">
+                          <label *ngIf="ejercicioAuditoria.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Descripción: <code>*</code></label>
+                        <textarea id="descripcion" name="descripcion" class="form-control" placeholder="Descripción"
+                                  [(ngModel)]="auditoria.descripcion" #descripcion="ngModel" [disabled]="accion == 'editar'"
+                                  [class.error]="
+                            descripcion.invalid &&
+                            (descripcion.dirty || descripcion.touched)
+                          " required maxlength="250">
+                        </textarea>
+                        <div *ngIf="
+                            descripcion.invalid &&
+                            (descripcion.dirty || descripcion.touched)
+                          ">
+                          <label *ngIf="descripcion.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Nombre de auditoría: <code>*</code></label>
+                        <textarea id="nombre" name="nombre" type="text" class="form-control" placeholder="Nombre"
+                                  [(ngModel)]="auditoria.nombre_auditoria" #nombreAuditoria="ngModel"
+                                  [disabled]="accion == 'editar'" [class.error]="
+                            nombreAuditoria.invalid &&
+                            (nombreAuditoria.dirty || nombreAuditoria.touched)
+                          " required maxlength="100"></textarea>
+                        <div *ngIf="
+                            nombreAuditoria.invalid &&
+                            (nombreAuditoria.dirty || nombreAuditoria.touched)
+                          ">
+                          <label *ngIf="nombreAuditoria.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Fecha de recepción: <code>*</code></label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="fecha_recepcion" name="fecha_recepcion" class="form-control"
+                                 placeholder="yyyy-mm-dd" [(ngModel)]="fecha_recepcion_" #fecha_recepcion="ngModel"
+                                 [disabled]="accion == 'editar'" [class.error]="
+                              fecha_recepcion.invalid &&
+                              (fecha_recepcion.dirty || fecha_recepcion.touched)
+                            " ngbDatepicker #fechaRecepcion="ngbDatepicker" (click)="fechaRecepcion.toggle()"
+                                 required />
+                        </div>
+                        <div *ngIf="fecha_recepcion.invalid &&
+                            (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                          <label *ngIf="fecha_recepcion.errors.required" class="error">Campo requerido</label>
+                        </div>
+                        <div *ngIf="!validarFechas() && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                          <label class="error">La fecha de recepción debe ser anterior a la fecha de cumplimiento</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Fecha de cumplimiento: </label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="fecha_cumplimiento" name="fecha_cumplimiento" class="form-control"
+                                 placeholder="yyyy-mm-dd" [(ngModel)]="fecha_cumplimiento_" #fecha_cumplimiento="ngModel"
+                                 [disabled]="accion == 'editar'" [class.error]="fecha_cumplimiento.invalid &&
+                              (fecha_cumplimiento.dirty || fecha_cumplimiento.touched)
+                            " ngbDatepicker #fechaCumplimiento="ngbDatepicker" (click)="fechaCumplimiento.toggle()" />
+                        </div>
+                        <div *ngIf="!validarFechas() && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                          <label class="error">La fecha de cumplimiento debe ser posterior a la fecha de recepción y la fecha actual</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Inicio revisión: <code>*</code></label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="inicio_revision" name="inicio_revision" class="form-control"
+                                 placeholder="yyyy-mm-dd" [(ngModel)]="inicio_revision_" #inicio_revision="ngModel"
+                                 [disabled]="accion == 'editar'" [class.error]="
+                              inicio_revision.invalid &&
+                              (inicio_revision.dirty || inicio_revision.touched)
+                            " ngbDatepicker #inicioRev="ngbDatepicker" (click)="inicioRev.toggle()"
+                                 required />
+                        </div>
+                        <div *ngIf="inicio_revision.invalid &&
+                            (inicio_revision.dirty || inicio_revision.touched)">
+                          <label *ngIf="inicio_revision.errors.required" class="error">Campo requerido</label>
+                        </div>
+                        <div *ngIf="!validarFechasRevision() && (inicio_revision.dirty || inicio_revision.touched)">
+                          <label class="error">La fecha Inicio revisión debe ser mayor a Fecha recepción y anterior a la fecha Fin revisión</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Fin revisión: <code>*</code></label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="fin_revision" name="fin_revision" class="form-control"
+                                 placeholder="yyyy-mm-dd" [(ngModel)]="fin_revision_" #fin_revision="ngModel"
+                                 [disabled]="accion == 'editar'" [class.error]="fin_revision.invalid &&
+                              (fin_revision.dirty || fin_revision.touched)
+                            " ngbDatepicker #finRev="ngbDatepicker" (click)="finRev.toggle()" required/>
+                        </div>
+                        <div *ngIf="fin_revision.invalid &&(fin_revision.dirty || fin_revision.touched)">
+                          <label *ngIf="fin_revision.errors.required" class="error">Campo requerido</label>
+                        </div>
+                        <div *ngIf="!validarFechasRevision() && (fin_revision.dirty || fin_revision.touched)">
+                          <label class="error">La fecha Fin revisión debe ser posterior a la fecha Inicio revisión y la fecha actual</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Área remitente: <code>*</code></label>
+                        <input id="area_nombre" name="area_nombre" type="text" class="form-control"
+                               [(ngModel)]="auditoria.area_nombre" [disabled]="accion == 'editar'"
+                               [hidden]="accion != 'editar'" />
+                        <ng-select id="area" name="area" placeholder="Seleccionar..."
+                                   [(ngModel)]="auditoria.id_area_remitente" #areaAuditoria="ngModel"
+                                   [hidden]="accion == 'editar'" [class.error]="
+                            areaAuditoria.invalid &&
+                            (areaAuditoria.dirty || areaAuditoria.touched)
+                          " required>
+                          <ng-option *ngFor="let area of listAreasRemitente" [value]="area.id_remitente">
+                            {{ area.nombre }}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="
+                            areaAuditoria.invalid &&
+                            (areaAuditoria.dirty || areaAuditoria.touched)
+                          ">
+                          <label *ngIf="areaAuditoria.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Persona remitente: <code>*</code></label>
+                        <input id="remitente_nombre" name="remitente_nombre" type="text" class="form-control"
+                               [(ngModel)]="auditoria.remitente_nombre" [disabled]="accion == 'editar'"
+                               [hidden]="accion != 'editar'" />
+                        <ng-select id="remitente" name="remitente" placeholder="Seleccionar..."
+                                   [(ngModel)]="auditoria.id_remitente" #remitenteAuditoria="ngModel"
+                                   [hidden]="accion == 'editar'" [class.error]="
+                            remitenteAuditoria.invalid &&
+                            (remitenteAuditoria.dirty ||
+                              remitenteAuditoria.touched)
+                          " required>
+                          <ng-option *ngFor="let rem of listPersonasRemitente" [value]="rem.id_usuario">
+                            {{ rem.nombre }} {{ rem.apellido_paterno }} {{ rem.apellido_materno }}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="
+                            remitenteAuditoria.invalid &&
+                            (remitenteAuditoria.dirty ||
+                              remitenteAuditoria.touched)
+                          ">
+                          <label *ngIf="remitenteAuditoria.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Ente fiscalizador: <code>*</code></label>
+                        <input id="fiscal_nombre" name="fiscal_nombre" type="text" class="form-control"
+                               [(ngModel)]="auditoria.fiscal_nombre" [disabled]="accion == 'editar'"
+                               [hidden]="accion != 'editar'" />
+                        <ng-select id="fiscal" name="fiscal" placeholder="Seleccionar..."
+                                   [(ngModel)]="auditoria.id_fiscal" #fiscalAuditoria="ngModel" [hidden]="accion == 'editar'"
+                                   [class.error]="
+                            fiscalAuditoria.invalid &&
+                            (fiscalAuditoria.dirty || fiscalAuditoria.touched)
+                          " required>
+                          <ng-option *ngFor="let fiscal of listFiscal" [value]="fiscal.id_fiscal">
+                            {{ fiscal.nombre }}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="
+                            fiscalAuditoria.invalid &&
+                            (fiscalAuditoria.dirty || fiscalAuditoria.touched)
+                          ">
+                          <label *ngIf="fiscalAuditoria.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="accion == 'editar'">
+                    <h4 class="card-title mrg-top-30">Oficios</h4>
+                    <p *ngIf="(usuario.id_rol == 8 || usuario.id_rol == 11)">
+                      Presione el botón <strong>+</strong> para agregar una nuevo <strong>oficio</strong>.
+                    </p>
+                    <div class="row" *ngIf="(usuario.id_rol == 8 || usuario.id_rol == 11)">
+                      <div class="col-md-12 text-right">
+                        <button class="btn btn-default btn-sm" (click)="agregarOficio()">
+                          <i class="ti-plus font-weight-bolder"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <!--<div class="progress progress-info progress-sm no-mrg-btm">
+      <div class="progress-bar active progress-bar-striped progress-bar-animated" role="progressbar"
+        style="width: 100%;"></div>
+    </div>-->
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th class="width-20">No. de Oficio</th>
+                                <th class="width-20">Estatus</th>
+                                <th class="width-30">Area remitente</th>
+                                <th class="width-30">Persona remitente</th>
+                                <th class="text-center width-15">Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="
+                                  let oficio of listOficios;
+                                  let i = index
+                                ">
+                                <td class="text center">
+                                  {{ oficio.num_oficio }}
+                                </td>
+                                <td class="text center">
+                                  {{ oficio.nombre_estatus | uppercase }}
+                                </td>
+                                <td class="text center">
+                                  {{ oficio.nombre_area_remitente }}
+                                </td>
+                                <td class="text center">
+                                  {{ oficio.nombre_persona_remitente }}
+                                </td>
+                                <td class="text-center">
+                                  <a class="btn btn-danger btn-sm" ngbTooltip="Editar"
+                                     *ngIf="oficio.id_estatus != 18"
+                                     [routerLink]="['../editarOficio', oficio]" [hidden]="accion != 'editar'">
+                                    <i class="ti-pencil font-weight-bolder" style="color: white;"></i>
+                                  </a>
+                                  <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Visualizar"
+                                     *ngIf="oficio.id_estatus == 18"
+                                     [routerLink]="['../editarOficio', oficio]">
+                                    <i class="ti-eye"></i>
+                                  </a>
+                                  <!--<a class="btn btn-danger btn-sm" ngbTooltip="Eliminar"
+                     (click)="eliminarRequerimiento(req)">
+                    <i class="ti-trash font-weight-bolder" style="color:white"></i>
+                  </a>-->
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="text-right mrg-top-5">
+                        <button class="btn btn-default" [hidden]="accion == 'editar'"
+                                [routerLink]="['/finanzas/auditorias/']">
+                          Cancelar
+                        </button>
+                        <button class="btn btn-info" [disabled]="auditoriaForm.invalid || (auditoriaForm.valid && !validarFechasRevision()) || guardando==true " [hidden]="accion == 'editar'"
+                                (click)="guardarAuditoria(auditoriaForm)">
+                          <i class="ti-save pdd-right-5"></i> Guardar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

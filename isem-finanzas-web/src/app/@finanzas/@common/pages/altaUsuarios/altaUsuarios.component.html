@@ -1,0 +1,119 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-heading border bottom">
+          <h4 class="card-title font-weight-bold">
+            <i class="ti-check-box mrg-right-15"></i>Usuarios<i class="ti-angle-right font-size-14 mrg-left-5 mrg-right-5"></i>{{tittle}}
+          </h4>
+        </div>
+        <div class="portlet">
+          <ul class="portlet-item">
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Regresar" 
+                (click)="location.back()">
+                <i class="ti-back-left"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-block">
+          <div class="mrg-top-10">
+            <div class="row">
+              <div class="col-md-11 ml-auto mr-auto">
+                <form class="ng-pristine ng-valid" role="form" #userForm='ngForm'>
+
+                  <h4 class="card-title mrg-top-10">Alta de usuario</h4>
+                  <p>Los campos marcados con <code>*</code> son obligatorios.</p>
+
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Nombre: <code>*</code></label>
+                        <input id="nombreUsuario" name="nombreUsuario" type="text" class="form-control"
+                               placeholder="Nombre" [(ngModel)]="usuarioForm.nombre" #nombreUsuarioForm="ngModel"
+                               [class.error]="nombreUsuarioForm.invalid && (nombreUsuarioForm.dirty || nombreUsuarioForm.touched)"
+                               required>
+                        <div *ngIf="nombreUsuarioForm.invalid && (nombreUsuarioForm.dirty || nombreUsuarioForm.touched)">
+                          <label *ngIf="nombreUsuarioForm.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Apellido paterno: <code>*</code></label>
+                        <input id="apellidoPaternoUsuario" name="apellidoPaternoUsuario" type="text" class="form-control"
+                               placeholder="Apellido paterno" [(ngModel)]="usuarioForm.apellido_paterno" #apellidoPaternoUsuarioForm="ngModel"
+                               [class.error]="apellidoPaternoUsuarioForm.invalid && (apellidoPaternoUsuarioForm.dirty || apellidoPaternoUsuarioForm.touched)"
+                               required>
+                        <div *ngIf="apellidoPaternoUsuarioForm.invalid && (apellidoPaternoUsuarioForm.dirty || apellidoPaternoUsuarioForm.touched)">
+                          <label *ngIf="apellidoPaternoUsuarioForm.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Apellido materno: <code>*</code></label>
+                        <input id="apellidoMaternoUsuario" name="apellidoMaternoUsuario" type="text" class="form-control"
+                               placeholder="Apellido materno" [(ngModel)]="usuarioForm.apellido_materno" #apellidoMaternoUsuarioForm="ngModel"
+                               [class.error]="apellidoMaternoUsuarioForm.invalid && (apellidoMaternoUsuarioForm.dirty || apellidoMaternoUsuarioForm.touched)"
+                               required>
+                        <div *ngIf="apellidoMaternoUsuarioForm.invalid && (apellidoMaternoUsuarioForm.dirty || apellidoMaternoUsuarioForm.touched)">
+                          <label *ngIf="apellidoMaternoUsuarioForm.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Email: <code>*</code></label>
+                        <input id="correoElectronicoUsuario" name="correoElectronicoUsuario" type="email" class="form-control"
+                               placeholder="Correo electronico" [(ngModel)]="usuarioForm.correo_electronico" #correoElectronicoUsuarioForm="ngModel"
+                               [class.error]="correoElectronicoUsuarioForm.invalid && (correoElectronicoUsuarioForm.dirty || correoElectronicoUsuarioForm.touched)"
+                               required>
+                        <div *ngIf="correoElectronicoUsuarioForm.invalid && (correoElectronicoUsuarioForm.dirty || correoElectronicoUsuarioForm.touched)">
+                          <label *ngIf="correoElectronicoUsuarioForm.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Rol: <code>*</code></label>
+                        <ng-select id="id_rol_usuario" name="id_rol_usuario" placeholder="Seleccionar..."
+                                   [(ngModel)]="usuarioForm.id_rol" #rolUsuarioForm="ngModel"
+                                   [class.error]="rolUsuarioForm.invalid && (rolUsuarioForm.dirty || rolUsuarioForm.touched)"
+                                   required>
+                          <ng-option *ngFor="let rol of listaRoles" [value]="rol.id_rol">
+                            {{rol.nombre}}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="rolUsuarioForm.invalid && (rolUsuarioForm.dirty || rolUsuarioForm.touched)">
+                          <label *ngIf="rolUsuarioForm.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="text-right mrg-top-5">
+                        <button class="btn btn-default" [routerLink]="['/finanzas']">Cancelar</button>
+                        <button class="btn btn-info" [disabled]="userForm.invalid"
+                                (click)="registrarUsuario(userForm)">
+                          <i class="ti-save pdd-right-5"></i> Guardar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

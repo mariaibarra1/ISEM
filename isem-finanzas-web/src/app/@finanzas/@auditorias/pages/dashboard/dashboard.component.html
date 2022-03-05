@@ -1,0 +1,122 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-heading border-bottom">
+          <h4 class="card-title font-weight-bold"><i class="ti-check-box mrg-right-15"></i>Auditorías</h4>
+        </div>
+        <div class="portlet">
+          <ul class="portlet-item">
+            <!--<li class="dropdown" ngbTooltip="Opciones">
+    <a href="" class="btn btn-icon btn-flat btn-rounded dropdown-toggle" data-toggle="dropdown"
+       aria-expanded="false">
+      <i class="ti-more"></i>
+    </a>
+    <ul class="dropdown-menu">
+      <li>
+        <a [routerLink]="['agregar']">
+          <i class="ti-plus pdd-right-10"></i>
+          <span>Agregar</span>
+        </a>
+      </li>
+      <li>
+        <a href="">
+          <i class="ti-smallcap pdd-right-10"></i>
+          <span>Edit</span>
+        </a>
+      </li>
+      <li>
+        <a href="">
+          <i class="ti-image pdd-right-10"></i>
+          <span>Add Images</span>
+        </a>
+      </li>
+    </ul>
+  </li>-->
+<!--  -->
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Agregar"
+                *ngIf="usuario.id_rol == 8 || usuario.id_rol == 11"
+                [routerLink]="['agregar']">
+                <i class="ti-plus"></i>
+              </a>
+            </li>
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Actualizar"
+                 (click)="actualizarAuditorias()">
+                <i class="ti-reload"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-block">
+          <div class="table-overflow">
+            <table class="table table-lg table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>Auditoría</th>
+                <th>Descripción</th>
+                <th>Estatus</th>
+                <th>Dias restantes</th>
+                <th>Fecha cumplimiento</th>
+                <th>Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let row of listAuditorias; index as i">
+                <td>
+                  <div class="mrg-top-15">
+                    <span class="text-info"><b>{{row.id_auditoria}}</b></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="mrg-top-15">
+                    <span class="info"> {{row.nombre_auditoria}} </span>
+                  </div>
+                </td>
+                <td>
+                  <div class="mrg-top-15">
+                    <span class="info"
+                          ngbPopover="{{row.descripcion}}"
+                          triggers="mouseenter:mouseleave"
+                          popoverTitle="Descipción"> {{row.descripcion}} </span>
+                  </div>
+                </td>
+                <td>
+                  <div class="relative mrg-top-15">
+                    <span class="status online"> </span>
+                    <span class="pdd-left-20">{{row.estatus_nombre}}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="mrg-top-15 text-center">
+                    <span class="info">{{row.dias_restantes}} dias</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="mrg-top-15">
+                    <span>{{row.fecha_cumplimiento}}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="mrg-top-5 text-center">
+                    <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle" *ngIf="usuario.id_rol == 8 || usuario.id_rol == 11" ngbTooltip="Agregar oficio" [routerLink]="['agregarOficio', row]">
+                      <i class="ti-plus font-size-22"></i>
+                    </button>
+                    <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle" ngbTooltip="Editar" [routerLink]="['editar', row]">
+                      <i class="ti-pencil font-size-22"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

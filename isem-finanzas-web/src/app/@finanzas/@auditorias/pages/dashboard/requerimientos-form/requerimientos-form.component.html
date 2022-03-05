@@ -1,0 +1,423 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-heading border bottom">
+          <h4 class="card-title font-weight-bold">
+            <i class="ti-check-box mrg-right-15"></i>Requerimientos<i class="ti-angle-right font-size-14 mrg-left-5 mrg-right-5"></i>{{tittle}}
+          </h4>
+        </div>
+        <div class="portlet">
+          <ul class="portlet-item">
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Regresar"
+                 (click)="redireccionOficio()">
+                <i class="ti-back-left"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-block">
+          <div class="mrg-top-40">
+            <div class="row">
+              <div class="col-md-11 ml-auto mr-auto">
+                <form class="ng-pristine ng-valid" role="form" #requerimientoForm='ngForm'>
+                  <div class="row" *ngIf="datosRequerimiento_1 == true">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Fecha de recepción</label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="f_recepcion" name="f_recepcion" class="form-control" placeholder="yyyy-mm-dd"
+                                 [(ngModel)]="fecha_recepcionFront" #f_recepcion="ngModel"
+                                 [class.error]="f_recepcion.invalid && (f_recepcion.dirty || f_recepcion.touched)" ngbDatepicker
+                                 #fRecepcion="ngbDatepicker" (click)="fRecepcion.toggle()" required disabled>
+                        </div>
+                        <div *ngIf="f_recepcion.invalid && (f_recepcion.dirty || f_recepcion.touched)">
+                          <label *ngIf="f_recepcion.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Requerimiento</label>
+                        <textarea id="requerimiento" name="requerimiento" type="text" class="form-control" placeholder="Requerimiento"
+                                  [(ngModel)]="requerimientoInput.descripcion" #requerimiento="ngModel"
+                                  [class.error]="requerimiento.invalid && (requerimiento.dirty || requerimiento.touched)" required
+                                  [disabled]="modoVisualizar == true || requerimientoInput.id_estatus == 12 " maxlength="150"> </textarea>
+                        <div *ngIf="requerimiento.invalid && (requerimiento.dirty || requerimiento.touched)">
+                          <label *ngIf="requerimiento.errors.required" class="error">Campo requerido</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Asignacion del responsable -->
+                  <div class="row" *ngIf="(accion == 'Editar') && (datosRequerimiento_2 == true)">
+                    <div class="col-md-6">
+                      <h4 class="card-title"
+                          *ngIf="responsables == true">
+                          Responsables
+                      </h4>
+                      <p *ngIf="agregarResponsable == true">
+                        Presione el botón <strong>+</strong> para agregar un
+                        <strong>responsable</strong>.
+                      </p>
+                    </div>
+                    <div class="col-md-6" *ngIf="agregarResponsable == true">
+                      <div class="form-group">
+                        <div class="col-md-12 text-right mt-5">
+                          <button class="btn btn-default btn-sm" (click)="abrirModal(Responsable, null)">
+                            <i class="ti-plus font-weight-bolder"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="(accion == 'Editar') && (datosRequerimiento_2 == true) && listaResponsables.length > 0">
+                    <div class="col-md-12">
+                      <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th class="width-5">No.</th>
+                              <th class="width-30">Nombre</th>
+                              <th class="width-20">Fecha asignación</th>
+                              <th class="width-30" class="text-center">Estatus</th>
+                              <th class="text-center width-15">Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let resp of listaResponsables; let i = index">
+                              <td> {{ i + 1 }}</td>
+                              <td> {{ resp.nombre_asignado }} </td>
+                              <td> {{ resp.fecha_asignacion | date: 'yyyy-MM-dd HH:mm:ss' }} </td>
+                              <td>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="relative" *ngIf="resp.aceptado == null">
+                                      <span class="status away"></span>
+                                      <span class="pdd-left-20">Asignado</span>
+                                    </div>
+                                    <div class="relative" *ngIf="resp.aceptado == true">
+                                      <span class="status online" ></span>
+                                      <span class="pdd-left-20">Aceptado</span>
+                                    </div>
+                                    <div class="relative" *ngIf="resp.aceptado == false">
+                                      <span class="status no-disturb" ></span>
+                                      <span class="pdd-left-20">Rechazado</span>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6" *ngIf="requerimientoInput.id_estatus != 16">
+                                    <div class="relative" *ngIf="resp.atendido_requerimiento == false">
+                                      <span class="pdd-left-20">No atendido</span>
+                                    </div>
+                                    <div class="relative" *ngIf="resp.atendido_requerimiento == true">
+                                      <span class="pdd-left-20">Atendido</span>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6" *ngIf="requerimientoInput.id_estatus == 16">
+                                    <div class="relative" *ngIf="resp.atendido_observacion == false">
+                                      <span class="pdd-left-20">No atendido</span>
+                                    </div>
+                                    <div class="relative" *ngIf="resp.atendido_observacion == true">
+                                      <span class="pdd-left-20">Atendido</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <a class="btn btn-danger btn-sm" ngbTooltip="Eliminar"
+                                    (click)="eliminarResp(i)"
+                                    [hidden]="resp.id_requerimiento_asignado != null">
+                                  <i class="ti-trash font-weight-bolder" style="color:white"></i>
+                                </a>
+                                <a class="btn btn-info btn-sm" ngbTooltip="Reasignar"
+                                  *ngIf="resp.id_requerimiento_asignado != null && resp.aceptado == false && (usuario.id_rol == 9 || usuario.id_rol == 11)"
+                                    (click)="abrirModal(Responsable, resp)">
+                                  <i class="ti-pencil font-weight-bolder" style="color:white"></i>
+                                </a>
+                                <a class="btn btn-danger btn-sm" ngbTooltip="Cancelar"
+                                  *ngIf="resp.id_requerimiento_asignado != null && resp.aceptado == false && (usuario.id_rol == 9 || usuario.id_rol == 11)"
+                                  (click)="cancelarAsignacion(resp)">
+                                  <i class="ti-trash font-weight-bolder" style="color:white"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Asignacion del responsable -->
+
+                  <div class="row" *ngIf="accion == 'Editar' && observacionRequerimiento == true">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Observación: <code>*</code></label>
+                        <textarea id="observacion" class="form-control" placeholder="Observación"
+                                  name="observacion" [(ngModel)]="observacionInput.observacion" #observacion="ngModel"
+                                  [class.error]="observacion.invalid && (observacion.dirty || observacion.touched)" required maxlength="500"></textarea>
+
+                        <div *ngIf="observacion.invalid && (observacion.dirty || observacion.touched)">
+                          <label *ngIf="observacion.errors.required" class="error">
+                            Campo
+                            requerido
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div *ngIf="accion == 'Editar' && (listaObservaciones.length > 0) && (observacionesRequerimiento == true)">
+
+                    <h4 class="card-title mrg-top-30">Observaciones</h4>
+                    <div class="row">
+                      <div class="col-md-12" >
+                        <!--<div class="progress progress-info progress-sm no-mrg-btm">
+                          <div class="progress-bar active progress-bar-striped progress-bar-animated" role="progressbar"
+                               style="width:100%">
+                          </div>
+                        </div>-->
+                        <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th class="width-60">Observacion</th>
+                                <th class="width-40">Fecha de creación</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let obser of listaObservaciones; index as i">
+                                <td>
+                                  {{obser.observacion}}
+                                </td>
+                                <td>
+                                  {{obser.fecha_creacion}}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div>
+                    <h4 class="card-title mrg-top-30" *ngIf="adjuntosRequerimiento == true">Anexos</h4>
+                    <p *ngIf="agregarAdjuntos == true">
+                      Seleccione el tipo de anexo y después presione el botón <strong>+</strong> para agregar una nuevo
+                      <strong>documento</strong>.
+                    </p>
+                  </div>
+
+                  <div class="row" *ngIf="agregarAdjuntos == true">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Tipo anexo</label>
+                        <ng-select id="tipo_adjunto" name="tipo_adjunto" placeholder="Seleccionar..."
+                                   [(ngModel)]="tipoAdjunto" #tipoAdjunto_="ngModel"
+                                   [class.error]="tipoAdjunto_.invalid && (tipoAdjunto_.dirty || tipoAdjunto_.touched)"
+                                   (change)="seleccionarTipoAdjunto()"
+                                   required>
+                          <ng-option *ngFor="let tipo of listTiposAdjunto" [value]="tipo">
+                            {{tipo.nombre}}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="tipoAdjunto_.invalid && (tipoAdjunto_.dirty || tipoAdjunto_.touched)">
+                          <label *ngIf="tipoAdjunto_.errors.required" class="error">Campo requerido</label>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group" [hidden]="tipoAdjunto_.invalid || tipoSeleccionado == false ">
+                        <div class="col-md-12 text-right">
+                          <button class="btn btn-default btn-sm" (click)="onClick()">
+                            <i class="ti-plus font-weight-bolder"></i>
+                          </button>
+                          <input style="display: none;" id="adjunto" name="adjunto" type="file"
+                                 (change)="agregarAdjunto($event.target.files)">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12" *ngIf="existenAdjuntos() && (adjuntosRequerimiento == true)">
+                      <!--<div class="progress progress-info progress-sm no-mrg-btm">
+                        <div class="progress-bar active progress-bar-striped progress-bar-animated" role="progressbar"
+                             style="width:100%">
+                        </div>
+                      </div>-->
+                      <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th class="width-40">Nombre</th>
+                              <th class="width-40">Tipo</th>
+                              <th class="text-center width-20">Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let adjunto of listAdjuntos; index as i">
+                              <td>
+                                {{adjunto.nombre}}
+                              </td>
+                              <td>
+                                {{adjunto.tipo_nombre}}
+                              </td>
+                              <td class="text-center">
+                                <a class="btn btn-danger btn-sm" ngbTooltip="Eliminar"
+                                   (click)="eliminarAdjunto(adjunto)" [hidden]="adjunto.id_adjunto != null || guardando == true">
+                                  <i class="ti-trash font-weight-bolder" style="color:white"></i>
+                                </a>
+
+                                <app-verAdjuntos [nombre_adjunto]="adjunto.nombre"
+                                                 [hidden]=" adjunto.id_adjunto == null">
+                                </app-verAdjuntos>
+
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                      <div class="col-md-12 text-right">
+
+                        <div class="dropdown inline-block">
+                          <button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle"
+                                  [disabled]="!validarFormulario(requerimientoForm) && modoVisualizar == true"
+                                  aria-expanded="false">
+                            <span>Acciones </span><i class="ti-angle-down font-size-9"></i>
+                          </button>
+                          <ul class="dropdown-menu" style="cursor: default;">
+                            <li *ngIf="(accion != 'Editar') && existenAdjuntos() && guardando==false">
+                              <a (click)="agregarRequerimiento(requerimientoForm) ">
+                                Agregar
+                              </a>
+                            </li>
+                            <li *ngIf="(accion == 'Editar') && (requerimientoInput.id_estatus == 2) && (oficioInput.id_estatus == 2) && guardando==false">
+                              <a (click)="agregarRequerimiento(requerimientoForm)">
+                                Editar
+                              </a>
+                            </li>
+                            <li *ngIf="(accion == 'Editar') && (requerimientoInput.id_estatus == 12) && (oficioInput.id_estatus == 12) && guardando==false && listaResponsables.length > 0">
+                              <a (click)="agregarRequerimiento(requerimientoForm)">
+                                Asignar
+                              </a>
+                            </li>
+                            <li *ngIf="accion == 'Editar' && (requerimientoInput.id_estatus == 14 || requerimientoInput.id_estatus == 17) && guardando==false">
+                              <a (click)="generarAtenderObservaciones(requerimientoForm)">
+                                Generar observación
+                              </a>
+                            </li>
+                            <li *ngIf="accion == 'Editar' && (requerimientoInput.id_estatus == 16) && guardando==false">
+                              <a (click)="generarAtenderObservaciones(requerimientoForm)">
+                                Atender observación
+                              </a>
+                            </li>
+                            <li *ngIf="accion == 'Editar' && validarFormularioAdObs(requerimientoForm) && (requerimientoInput.id_estatus == 13) && guardando==false">
+                              <a (click)="agregarRequerimiento(requerimientoForm)">
+                                Atender requerimiento
+                              </a>
+                            </li>
+                            <li *ngIf="accion == 'Editar' && validarFormularioAdObs(requerimientoForm) && (requerimientoInput.id_estatus == 14 || requerimientoInput.id_estatus == 17) && guardando==false">
+                              <a (click)="agregarRequerimiento(requerimientoForm)">
+                                Procesar revisión
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                  </div>
+
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de asignacion de responsables -->
+
+<ng-template #Responsable let-modal>
+  <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Asignación del responsable</h4>
+      <button type="button" class="close" aria-label="Close" (click)="cerrarModal()">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body" style="padding: 30px;">
+      <form class="ng-pristine ng-valid" role="form" #ResponsableForm='ngForm'>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Fecha de asignación</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="ti-calendar"></i>
+                </span>
+                <input id="f_asignacion" name="f_asignacion" class="form-control" placeholder="yyyy-mm-dd"
+                       [(ngModel)]="fecha_asignacionFront" #f_asignacion="ngModel"
+                       [class.error]="f_asignacion.invalid && (f_asignacion.dirty || f_asignacion.touched)" ngbDatepicker
+                       #fAsigacion="ngbDatepicker" (click)="fAsigacion.toggle()" required disabled>
+              </div>
+              <div *ngIf="f_asignacion.invalid && (f_asignacion.dirty || f_asignacion.touched)">
+                <label *ngIf="f_asignacion.errors.required" class="error">Campo requerido</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Asignado a...</label>
+              <ng-select id="asignado" name="asignado" placeholder="Seleccionar..."
+                         [(ngModel)]="responsableInput.id_asignado" #asignado="ngModel"
+                         [class.error]="asignado.invalid && (asignado.dirty || asignado.touched)" required
+                         >
+                <ng-option *ngFor="let asig of listUsuarios" [value]="asig.id_usuario">
+                  {{asig.nombre}} {{asig.apellido_materno}} {{asig.apellido_paterno}}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="asignado.invalid && (asignado.dirty || asignado.touched)">
+                <label *ngIf="asignado.errors.required" class="error">Campo requerido</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-outline-info"
+              [disabled]="ResponsableForm.invalid"
+              *ngIf="responsable.id_requerimiento_asignado == null"
+      (click)="modal.close(responsable.id_asignado)" >
+        Agregar
+      </button>
+      <button type="button" class="btn btn-outline-info"
+              [disabled]="ResponsableForm.invalid"
+              *ngIf="responsable.id_requerimiento_asignado != null"
+              (click)="reasignar(responsable)">
+        Reasignar
+      </button>
+  </div>
+</ng-template>
+
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

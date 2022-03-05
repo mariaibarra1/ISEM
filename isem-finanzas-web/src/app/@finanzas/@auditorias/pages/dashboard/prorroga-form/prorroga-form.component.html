@@ -1,0 +1,98 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <div class="card-heading border bottom">
+      <h4 class="card-title font-weight-bold">
+        Oficio
+        <i class="ti-angle-right font-size-14 mrg-left-5 mrg-right-5"></i>Prorroga
+      </h4>
+    </div>
+  </div>
+  <div class="modal-body">
+    <form class="ng-pristine ng-valid" role="form" #oficioForm_P='ngForm' autocomplete="off">
+      <div class="padding-15">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>No. de oficio:</label>
+              <input id="oficio" name="oficio" type="text" class="form-control" placeholder="No. de oficio"
+                [(ngModel)]="oficioInput.num_oficio" #numOficio="ngModel"
+                [class.error]="numOficio.invalid && (numOficio.dirty || numOficio.touched)" required disabled>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Fecha de recepción:</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="ti-calendar"></i>
+                </span>
+                <input id="fecha_recepcion" name="fecha_recepcion" class="form-control"
+                  placeholder="dd-mm-yyyy" [(ngModel)]="fechaRecepcion" #fecha_recepcion="ngModel"
+                  [class.error]="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)"
+                  ngbDatepicker #fechaRecepcion_="ngbDatepicker" (click)="fechaRecepcion_.toggle()" required disabled>
+              </div>
+              <div *ngIf="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                <label *ngIf="fecha_recepcion.errors.required" class="error">
+                  Campo
+                  requerido
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Fecha de cumplimiento:</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="ti-calendar"></i>
+                </span>
+                <input id="fecha_cumplimiento" name="fecha_cumplimiento" class="form-control"
+                       placeholder="dd-mm-yyyy" [(ngModel)]="fechaCumplimiento" #fecha_cumplimiento="ngModel"
+                       [class.error]="fecha_cumplimiento.invalid && (fecha_cumplimiento.dirty || fecha_cumplimiento.touched)"
+                       ngbDatepicker #fechaCumplimiento_="ngbDatepicker" (click)="fechaCumplimiento_.toggle()"
+                       required disabled>
+              </div>
+              <div *ngIf="fecha_cumplimiento.invalid && (fecha_cumplimiento.dirty || fecha_cumplimiento.touched)">
+                <label *ngIf="fecha_cumplimiento.errors.required" class="error">Campo requerido</label>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Nueva fecha de cumplimiento: <code>*</code></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="ti-calendar"></i>
+                </span>
+                <input id="fecha_cumplimiento_n" name="fecha_cumplimiento_n" class="form-control"
+                       placeholder="dd-mm-yyyy" [(ngModel)]="nuevFechaCumplimiento" #nueva_fecha_cumplimiento="ngModel"
+                       [class.error]="nueva_fecha_cumplimiento.invalid && (nueva_fecha_cumplimiento.dirty || nueva_fecha_cumplimiento.touched)"
+                       ngbDatepicker #newfechaCumplimiento="ngbDatepicker" (click)="newfechaCumplimiento.toggle()"
+                       required>
+              </div>
+              <div *ngIf="nueva_fecha_cumplimiento.invalid && (nueva_fecha_cumplimiento.dirty || nueva_fecha_cumplimiento.touched)">
+                <label *ngIf="nueva_fecha_cumplimiento.errors.required" class="error">
+                  Campo requerido
+                </label>
+              </div>
+              <div *ngIf="!validarFechas() && (nueva_fecha_cumplimiento.dirty || nueva_fecha_cumplimiento.touched)">
+                <label class="error">La fecha de cumplimiento debe ser posterior a la fecha de recepción y la fecha actual</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer no-border">
+    <div class="text-right">
+      <button class="btn btn-default btn-sm" (click)="cerrarModal()">Cancelar</button>
+      <button type="submit" class="btn btn-info btn-sm" [disabled]="oficioForm_P.invalid || (oficioForm_P.valid && !validarFechas())" (click)="aplicarProrroga(oficioForm_P)">
+        Modificar fecha
+      </button>
+    </div>
+  </div>
+</div>

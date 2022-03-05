@@ -1,0 +1,351 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-heading border bottom">
+          <h4 class="card-title font-weight-bold">
+            <i class="ti-check-box mrg-right-15"></i>Oficios<i
+              class="ti-angle-right font-size-14 mrg-left-5 mrg-right-5"></i>{{tittle}}
+          </h4>
+        </div>
+        <div class="portlet">
+          <ul class="portlet-item">
+            <li>
+              <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Regresar"
+                (click)="redireccionAuditoria()">
+                <i class="ti-back-left"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-block">
+          <div class="mrg-top-40">
+            <div class="row">
+              <div class="col-md-11 ml-auto mr-auto">
+                <form class="ng-pristine ng-valid" role="form" #oficioForm='ngForm'>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Nombre de auditoría: <code>*</code></label>
+                        <input id="nombre_aud" name="nombre_aud" type="text" class="form-control"
+                          placeholder="No. de auditoría" [(ngModel)]="auditoria.nombre_auditoria"
+                          #nombreAuditoria="ngModel" [disabled]="true">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>No. de oficio: <code>*</code></label>
+                        <input id="oficio" name="oficio" type="text" class="form-control" placeholder="No. de oficio"
+                          [(ngModel)]="oficio.num_oficio" #numOficio="ngModel" [disabled]="existeOficio()"
+                          [class.error]="numOficio.invalid && (numOficio.dirty || numOficio.touched)" required maxlength="50">
+                        <div *ngIf="numOficio.invalid && (numOficio.dirty || numOficio.touched)">
+                          <label *ngIf="numOficio.errors.required" class="error">
+                            Campo
+                            requerido
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Fecha de recepción: <code>*</code></label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="fecha_recepcion" name="fecha_recepcion" class="form-control"
+                                 placeholder="dd-mm-yyyy" [(ngModel)]="fecha_recepcion_" #fecha_recepcion="ngModel"
+                                 [disabled]="existeOficio()"
+                                 [class.error]="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)"
+                                 ngbDatepicker #fechaRecepcion="ngbDatepicker" (click)="fechaRecepcion.toggle()" required>
+                        </div>
+                        <div *ngIf="fecha_recepcion.invalid && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                          <label *ngIf="fecha_recepcion.errors.required" class="error">
+                            Campo
+                            requerido
+                          </label>
+                        </div>
+                        <div *ngIf="!validarFechas() && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                          <label class="error">La fecha de recepción debe ser anterior a la fecha de cumplimiento</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Fecha de cumplimiento: <code>*</code></label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <i class="ti-calendar"></i>
+                          </span>
+                          <input id="fecha_cumplimiento" name="fecha_cumplimiento" class="form-control"
+                                 placeholder="dd-mm-yyyy" [(ngModel)]="fecha_cumplimiento_" #fecha_cumplimiento="ngModel"
+                                 [disabled]="existeOficio()"
+                                 [class.error]="fecha_cumplimiento.invalid && (fecha_cumplimiento.dirty || fecha_cumplimiento.touched)"
+                                 ngbDatepicker #fechaCumplimiento="ngbDatepicker" (click)="fechaCumplimiento.toggle()"
+                                 required>
+                        </div>
+                        <div *ngIf="fecha_cumplimiento.invalid && (fecha_cumplimiento.dirty || fecha_cumplimiento.touched)">
+                          <label *ngIf="fecha_cumplimiento.errors.required" class="error">Campo requerido</label>
+                        </div>
+                        <div *ngIf="!validarFechas() && (fecha_recepcion.dirty || fecha_recepcion.touched)">
+                          <label class="error">La fecha de cumplimiento debe ser posterior a la fecha de recepción y la fecha actual</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Área remitente: <code>*</code></label>
+                        <ng-select id="area" name="area" placeholder="Seleccionar..."
+                          [(ngModel)]="oficio.id_area_remitente" #areaOficio="ngModel" [hidden]="accion == 'editar'"
+                          [class.error]="areaOficio.invalid && (areaOficio.dirty || areaOficio.touched)"
+                          [disabled]="existeOficio()" required>
+                          <ng-option *ngFor="let area of listAreasRemitente" [value]="area.id_remitente">
+                            {{area.nombre}}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="areaOficio.invalid && (areaOficio.dirty || areaOficio.touched)">
+                          <label *ngIf="areaOficio.errors.required" class="error">
+                            Campo
+                            requerido
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Persona remitente: <code>*</code></label>
+                        <ng-select id="remitente" name="remitente" placeholder="Seleccionar..."
+                          [(ngModel)]="oficio.id_persona_remitente" #remitenteOficio="ngModel"
+                          [hidden]="accion == 'editar'"
+                          [class.error]="remitenteOficio.invalid && (remitenteOficio.dirty || remitenteOficio.touched)"
+                          [disabled]="existeOficio()" required>
+                          <ng-option *ngFor="let rem of listPersonasRemitente" [value]="rem.id_usuario">
+                            {{rem.nombre }} {{rem.apellido_paterno}} {{rem.apellido_materno}}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="remitenteOficio.invalid && (remitenteOficio.dirty || remitenteOficio.touched)">
+                          <label *ngIf="remitenteOficio.errors.required" class="error">
+                            Campo
+                            requerido
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Descripcion: <code>*</code></label>
+                        <textarea id="descripcion" name="descripcion" class="form-control" placeholder="Descripción"
+                          [(ngModel)]="oficio.descripcion" #descripcion="ngModel" [disabled]="existeOficio()"
+                          [class.error]="descripcion.invalid && (descripcion.dirty || descripcion.touched)" required maxlength="250">
+                                                </textarea>
+                        <div *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                          <label *ngIf="descripcion.errors.required" class="error">
+                            Campo
+                            requerido
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Se agrega el modulo de añexos -->
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h4 class="card-title mrg-top-30" [hidden]="accion == 'editarOficio' && listAdjuntos.length == 0">Anexos</h4>
+                      <p *ngIf="!existeOficio()">
+                        Seleccione el tipo de anexo y después presione el botón <strong>+</strong> para agregar una nuevo
+                        <strong>documento</strong>.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="!existeOficio()">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Tipo anexo</label>
+                        <ng-select id="tipo_adjunto" name="tipo_adjunto" placeholder="Seleccionar..."
+                                   [(ngModel)]="tipoAdjunto" #tipoAdjunto_="ngModel"
+                                   [class.error]="tipoAdjunto_.invalid && (tipoAdjunto_.dirty || tipoAdjunto_.touched)"
+                                   (change)="seleccionarTipoAdjunto()"
+                                   required>
+                          <ng-option *ngFor="let tipo of listTiposAdjunto" [value]="tipo">
+                            {{tipo.nombre}}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="tipoAdjunto_.invalid && (tipoAdjunto_.dirty || tipoAdjunto_.touched)">
+                          <label *ngIf="tipoAdjunto_.errors.required" class="error">Campo requerido</label>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group" [hidden]="tipoAdjunto_.invalid || tipoSeleccionado == false ">
+                        <div class="col-md-12 text-right">
+                          <button class="btn btn-default btn-sm" (click)="onClick()">
+                            <i class="ti-plus font-weight-bolder"></i>
+                          </button>
+                          <input style="display: none;" id="adjunto" name="adjunto" type="file"
+                                 (change)="agregarAdjunto($event.target.files)">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12" *ngIf="existenAdjuntos()">
+                      <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th class="width-40">Nombre</th>
+                              <th class="width-40">Tipo</th>
+                              <th class="text-center width-20">Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let adjunto of listAdjuntos; index as i">
+                              <td>
+                                {{adjunto.nombre}}
+                              </td>
+                              <td>
+                                {{adjunto.tipo_nombre}}
+                              </td>
+                              <td class="text-center">
+                                <a class="btn btn-danger btn-sm" ngbTooltip="Eliminar"
+                                   (click)="eliminarAdjunto(adjunto)" [hidden]="adjunto.id_adjunto != null || guardando == true">
+                                  <i class="ti-trash font-weight-bolder" style="color:white"></i>
+                                </a>
+
+                                <app-verAdjuntos [nombre_adjunto]="adjunto.nombre"
+                                                 [hidden]=" adjunto.id_adjunto == null">
+                                </app-verAdjuntos>
+
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Se visualiza al existir oficio-->
+                  <div *ngIf="existeOficio()">
+                    <div *ngIf="oficio.id_estatus == 2 ">
+                      <h4 class="card-title mrg-top-30">Requerimientos</h4>
+                      <p *ngIf="(usuario.id_rol == 8 || usuario.id_rol == 11)">
+                        Presione el botón <strong>+</strong> para agregar una nuevo<strong> requerimiento</strong>.
+                      </p>
+                      <div class="row" *ngIf="(usuario.id_rol == 8 || usuario.id_rol == 11)">
+                        <div class="col-md-12 text-right">
+                          <button class="btn btn-default btn-sm" (click)="agregarRequerimiento()" >
+                            <i class="ti-plus font-weight-bolder"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="oficio.id_estatus != 2">
+                      <h4 class="card-title mrg-top-30">Lista de requerimientos</h4>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="table-overflow table-wrapper-scroll-y table-wrapper-scrollbar table-sticky-head">
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th class="width-5">No.</th>
+                                <th class="width-20">Estatus</th>
+                                <th class="width-35">Requerimiento</th>
+                                <th class="width-20">Asignado a</th>
+                                <th class="text-center width-20">Acciones</th>
+
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let req of listRequerimientos;  let i = index">
+                                <td class="text center">
+                                  {{ i+1 }}
+                                </td>
+                                <td>
+                                  {{ req.nombre_estatus | uppercase }}
+                                </td>
+                                <td>
+                                  {{ req.descripcion }}
+                                </td>
+                                <td>
+                                  <div><span>{{req.asignados}}</span><br /></div>
+                                </td>
+                                <td class="text-center">
+
+
+                                  <a class="btn btn-icon btn-flat btn-rounded font-weight-bolder text-dark" ngbTooltip="Visualizar"
+                                     *ngIf="req.accion == 'visualizar'"
+                                     [routerLink]="['../editarRequerimiento', req]">
+                                    <i class="ti-eye"></i>
+                                  </a>
+
+                                  <a class="btn btn-success btn-sm" ngbTooltip="Aceptar" *ngIf="req.aceptado == null && usuario.id_rol == 10" (click)="aceptarRequerimiento(req.id_requerimiento_asignado)">
+                                    <i class="ti-check-box" style="color:white"></i>
+                                  </a>
+                                  <a class="btn btn-danger btn-sm" ngbTooltip="Rechazar" *ngIf="req.aceptado == null && usuario.id_rol == 10" (click)="rechazarRequerimiento(req.id_requerimiento_asignado)">
+                                    <i class="ti-close" style="color:white"></i>
+                                  </a>
+
+                                  <a class="btn btn-info btn-sm" ngbTooltip="Editar" *ngIf="(req.accion == 'editar')"
+                                     [routerLink]="['../editarRequerimiento', req]">
+                                    <i class="ti-pencil font-weight-bolder" style="color:white"></i>
+                                  </a>
+
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="(oficio.id_estatus == 2 || oficio.id_estatus == 12) && (validarTurnado())">
+                      <div class="col-md-12">
+                        <div class="text-right mrg-top-5">
+                          <button class="btn btn-info" (click)="modificarOficio()" *ngIf="(usuario.id_rol == 8 || usuario.id_rol == 11) && oficio.id_estatus == 2  && validarTurnado()">Turnar recibida</button>
+                          <button class="btn btn-info" (click)="modificarOficio()" *ngIf="(usuario.id_rol == 9 || usuario.id_rol == 11) && oficio.id_estatus == 12 && validarTurnado()">Turnar cerrado</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="validarProrroga() && (usuario.id_rol == 9 || usuario.id_rol == 11)">
+                      <div class="col-md-12">
+                        <div class="text-right mrg-top-5">
+                          <button class="btn btn-info" (click)="abrirModalProrroga()">Solicitar Prorroga</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="text-right mrg-top-5">
+
+                        <button class="btn btn-default" [routerLink]="['/finanzas/auditorias/']"
+                          *ngIf="!existeOficio()">
+                          Cancelar
+                        </button>
+                        <button class="btn btn-info" [disabled]="oficioForm.invalid || (oficioForm.valid && !validarFechas()) || guardando==true || listAdjuntos.length == 0" (click)="guardarOficio(oficioForm)"
+                          *ngIf="!existeOficio()">
+                          <i class="ti-save pdd-right-5"></i> Guardar
+                        </button>
+
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>
